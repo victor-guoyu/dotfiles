@@ -1,3 +1,5 @@
+require("config-watcher")
+
 hs.application.enableSpotlightForNameSearches(true)
 
 local function toggleApp(settings)
@@ -24,7 +26,7 @@ toggleApp({
 })
 
 toggleApp({
-	app = "Chrome",
+	app = "Google Chrome",
 	mods = { "cmd", "alt" },
 	key = "1",
 })
