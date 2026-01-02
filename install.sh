@@ -4,11 +4,11 @@ source "$(dirname "$0")/utils.sh"
 
 mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
 
-
 # symlink dotfiles
+# TODO: replace with GNU stow
 
-# alacritty
-link_dotfiles "alacritty" "${XDG_CONFIG_HOME}/alacritty"
+# ghostty
+link_dotfiles "ghostty" "${XDG_CONFIG_HOME}/ghostty"
 
 # hammerspoon
 link_dotfiles "hammerspoon" "${HOME}/.hammerspoon"

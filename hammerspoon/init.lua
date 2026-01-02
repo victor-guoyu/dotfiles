@@ -14,7 +14,7 @@ local function toggleApp(settings)
 end
 
 toggleApp({
-	app = "Alacritty",
+	app = "Ghostty",
 	mods = { "cmd", "alt" },
 	key = "`",
 })
