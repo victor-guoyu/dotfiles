@@ -10,6 +10,9 @@ mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
 # ghostty
 link_dotfiles "ghostty" "${XDG_CONFIG_HOME}/ghostty"
 
+#nvim
+link_dotfiles "nvim" "${XDG_CONFIG_HOME}/nvim"
+
 # hammerspoon
 link_dotfiles "hammerspoon" "${HOME}/.hammerspoon"
 
