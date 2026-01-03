@@ -4,6 +4,11 @@ source "$(dirname "$0")/utils.sh"
 
 mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
 
+# install packages
+install_homebrew
+install_package "tmux"
+install_package "neovim"
+
 # symlink dotfiles
 # TODO: replace with GNU stow
 
