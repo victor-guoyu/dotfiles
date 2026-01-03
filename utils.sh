@@ -45,28 +45,28 @@ install_package() {
   fi
 
   case "$MACHINE_TYPE" in
-    mac)
-      # Check if package is already installed
-      if brew list "$package_name" &>/dev/null; then
-        echo "$package_name is already installed, skipping"
-      else
-        echo "Installing $package_name via brew..."
-        brew install "$package_name"
-      fi
-      ;;
-    linux)
-      # Check if package is already installed
-      if dpkg -l | grep -q "^ii.*$package_name"; then
-        echo "$package_name is already installed, skipping"
-      else
-        echo "Installing $package_name via apt-get..."
-        sudo apt-get install -y "$package_name"
-      fi
-      ;;
-    *)
-      echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
-      return 1
-      ;;
+  mac)
+    # Check if package is already installed
+    if brew list "$package_name" &>/dev/null; then
+      echo "$package_name is already installed, skipping"
+    else
+      echo "Installing $package_name via brew..."
+      brew install "$package_name"
+    fi
+    ;;
+  linux)
+    # Check if package is already installed
+    if dpkg -l | grep -q "^ii.*$package_name"; then
+      echo "$package_name is already installed, skipping"
+    else
+      echo "Installing $package_name via apt-get..."
+      sudo apt-get install -y "$package_name"
+    fi
+    ;;
+  *)
+    echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
+    return 1
+    ;;
   esac
 }
 
@@ -106,7 +106,8 @@ install_cask() {
     echo "$package_name is already installed, skipping"
   else
     echo "Installing $package_name via brew cask..."
-    brew install --cask "$package_name"
+    # if the app is already installed via other means, --force will override the existing installation.
+    brew install --cask "$package_name" --force
   fi
 }
 
@@ -126,4 +127,3 @@ clone_repo() {
     git clone "$repo_url" "$destination"
   fi
 }
-
