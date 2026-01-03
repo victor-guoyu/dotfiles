@@ -110,3 +110,20 @@ install_cask() {
   fi
 }
 
+clone_repo() {
+  local repo_url="$1"
+  local destination="$2"
+
+  if [ -z "$repo_url" ] || [ -z "$destination" ]; then
+    echo "Error: Both repo URL and destination are required" >&2
+    return 1
+  fi
+
+  if [ -d "$destination" ]; then
+    echo "$(basename "$destination") already exists, skipping"
+  else
+    echo "Cloning $repo_url to $destination..."
+    git clone "$repo_url" "$destination"
+  fi
+}
+

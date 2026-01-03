@@ -7,7 +7,7 @@ mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
 # install packages
 install_homebrew
 install_cask "font-code-new-roman-nerd-font"
-install_cask "hammerspoont"
+install_cask "hammerspoon"
 install_package "tmux"
 install_package "neovim"
 
@@ -25,3 +25,4 @@ link_dotfiles "hammerspoon" "${HOME}/.hammerspoon"
 
 # tmux
 link_dotfiles "tmux/tmux.conf" "${HOME}/.tmux.config"
+clone_repo "https://github.com/tmux-plugins/tpm" "${HOME}/.tmux/plugins/tpm"
