@@ -7,6 +7,7 @@ mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
 # install packages
 install_homebrew
 install_cask "font-code-new-roman-nerd-font"
+install_cask "rectangle"
 install_cask "hammerspoon"
 install_cask "ghostty"
 install_package "tmux"
