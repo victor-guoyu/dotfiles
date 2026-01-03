@@ -87,3 +87,26 @@ install_homebrew() {
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
+install_cask() {
+  local package_name="$1"
+
+  if [ -z "$package_name" ]; then
+    echo "Error: Package name is required" >&2
+    return 1
+  fi
+
+  # Casks are only available on Mac
+  if [ "$MACHINE_TYPE" != "mac" ]; then
+    echo "Casks are only supported on Mac, skipping $package_name"
+    return 0
+  fi
+
+  # Check if already installed
+  if brew list --cask "$package_name" &>/dev/null; then
+    echo "$package_name is already installed, skipping"
+  else
+    echo "Installing $package_name via brew cask..."
+    brew install --cask "$package_name"
+  fi
+}
+
