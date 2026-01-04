@@ -11,6 +11,7 @@ install_cask "rectangle"
 install_cask "hammerspoon"
 install_cask "ghostty"
 install_package "tmux"
+install_package "ripgrep"
 install_package "neovim"
 
 # symlink dotfiles
