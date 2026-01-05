@@ -28,6 +28,6 @@ link_dotfiles "nvim" "${XDG_CONFIG_HOME}/nvim"
 link_dotfiles "hammerspoon" "${HOME}/.hammerspoon"
 
 # tmux
-link_dotfiles "tmux/tmux.conf" "${HOME}/.tmux.config"
+link_dotfiles "tmux/tmux.conf" "${HOME}/.tmux.conf"
 clone_repo "https://github.com/tmux-plugins/tpm" "${HOME}/.tmux/plugins/tpm"
 echo "✅ all done!"
