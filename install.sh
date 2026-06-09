@@ -14,6 +14,7 @@ install_package "tmux"
 install_package "ripgrep"
 install_package "fzf"
 install_package "neovim"
+install_package "zoxide"
 
 # symlink dotfiles
 # TODO: replace with GNU stow
