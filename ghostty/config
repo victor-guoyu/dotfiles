@@ -1,2 +1,6 @@
 theme = Nord
 window-decoration = none
+
+# Map Cmd+Left/Right to Home/End so they move to line start/end in Neovim.
+keybind = cmd+left=text:\x1b[H
+keybind = cmd+right=text:\x1b[F
