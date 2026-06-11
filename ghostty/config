@@ -4,3 +4,6 @@ window-decoration = none
 # Map Cmd+Left/Right to Home/End so they move to line start/end in Neovim.
 keybind = cmd+left=text:\x1b[H
 keybind = cmd+right=text:\x1b[F
+
+# Forward Cmd+S as Ctrl+S so Neovim's save mapping fires.
+keybind = cmd+s=text:\x13
