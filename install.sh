@@ -16,6 +16,9 @@ install_package "fzf"
 install_package "neovim"
 install_package "zoxide"
 
+brew_install "fd"
+debian_install "fd-find"
+
 # symlink dotfiles
 # TODO: replace with GNU stow
 

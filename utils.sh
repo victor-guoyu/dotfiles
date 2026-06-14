@@ -46,22 +46,10 @@ install_package() {
 
   case "$MACHINE_TYPE" in
   mac)
-    # Check if package is already installed
-    if brew list "$package_name" &>/dev/null; then
-      echo "$package_name is already installed, skipping"
-    else
-      echo "Installing $package_name via brew..."
-      brew install "$package_name"
-    fi
+    brew_install "$package_name"
     ;;
   linux)
-    # Check if package is already installed
-    if dpkg -l | grep -q "^ii.*$package_name"; then
-      echo "$package_name is already installed, skipping"
-    else
-      echo "Installing $package_name via apt-get..."
-      sudo apt-get install -y "$package_name"
-    fi
+    debian_install "$package_name"
     ;;
   *)
     echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
@@ -85,6 +73,52 @@ install_homebrew() {
 
   echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+}
+
+brew_install() {
+  local package_name="$1"
+
+  if [ -z "$package_name" ]; then
+    echo "Error: Package name is required" >&2
+    return 1
+  fi
+
+  # Only install on Mac
+  if [ "$MACHINE_TYPE" != "mac" ]; then
+    echo "brew is only supported on Mac, skipping $package_name"
+    return 0
+  fi
+
+  # Check if already installed
+  if brew list "$package_name" &>/dev/null; then
+    echo "$package_name is already installed, skipping"
+  else
+    echo "Installing $package_name via brew..."
+    brew install "$package_name"
+  fi
+}
+
+debian_install() {
+  local package_name="$1"
+
+  if [ -z "$package_name" ]; then
+    echo "Error: Package name is required" >&2
+    return 1
+  fi
+
+  # Only install on Linux
+  if [ "$MACHINE_TYPE" != "linux" ]; then
+    echo "apt-get is only supported on Linux, skipping $package_name"
+    return 0
+  fi
+
+  # Check if already installed
+  if dpkg -l | grep -q "^ii.*$package_name"; then
+    echo "$package_name is already installed, skipping"
+  else
+    echo "Installing $package_name via apt-get..."
+    sudo apt-get install -y "$package_name"
+  fi
 }
 
 install_cask() {
