@@ -20,6 +20,8 @@ require("lazy").setup({
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     -- enable python LSP
     { import = "lazyvim.plugins.extras.lang.python" },
+    -- enable typescript LSP
+    { import = "lazyvim.plugins.extras.lang.typescript" },
     -- import/override with your plugins
     { import = "plugins" },
   },

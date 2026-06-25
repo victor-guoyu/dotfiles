@@ -19,6 +19,10 @@ install_package "zoxide"
 brew_install "fd"
 debian_install "fd-find"
 
+# node: required by the typescript LSP server (vtsls/tsserver)
+brew_install "node"
+debian_install "nodejs"
+
 # symlink dotfiles
 # TODO: replace with GNU stow
 
