@@ -1,0 +1,7 @@
+{
+  "model": "opus",
+  "tui": "fullscreen",
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  }
+}

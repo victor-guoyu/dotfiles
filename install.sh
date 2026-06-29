@@ -35,6 +35,10 @@ link_dotfiles "nvim" "${XDG_CONFIG_HOME}/nvim"
 # hammerspoon
 link_dotfiles "hammerspoon" "${HOME}/.hammerspoon"
 
+# claude code
+mkdir -p "${HOME}/.claude"
+link_dotfiles ".claude/settings.json" "${HOME}/.claude/settings.json"
+
 # tmux
 link_dotfiles "tmux/tmux.conf" "${HOME}/.tmux.conf"
 clone_repo "https://github.com/tmux-plugins/tpm" "${HOME}/.tmux/plugins/tpm"
