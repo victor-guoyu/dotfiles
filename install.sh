@@ -1,6 +1,7 @@
 #!/bin/bash -eu
 
 source "$(dirname "$0")/utils.sh"
+source "$(dirname "$0")/zsh/install.sh"
 
 mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
 
@@ -28,6 +29,9 @@ debian_install "nodejs"
 
 # ghostty
 link_dotfiles "ghostty" "${XDG_CONFIG_HOME}/ghostty"
+
+# zsh
+install_zsh
 
 #nvim
 link_dotfiles "nvim" "${XDG_CONFIG_HOME}/nvim"
