@@ -1,7 +1,8 @@
 {
-  "model": "opus",
-  "tui": "fullscreen",
   "permissions": {
     "defaultMode": "bypassPermissions"
-  }
+  },
+  "model": "opus",
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true
 }
