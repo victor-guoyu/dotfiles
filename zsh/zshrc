@@ -29,6 +29,8 @@ source $ZSH/oh-my-zsh.sh
 # default editor
 export EDITOR="nvim"
 export VISUAL="$EDITOR"
+alias vi="nvim"
+alias vim="nvim"
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
