@@ -26,6 +26,10 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
+# default editor
+export EDITOR="nvim"
+export VISUAL="$EDITOR"
+
 # nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
