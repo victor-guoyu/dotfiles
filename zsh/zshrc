@@ -25,29 +25,21 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+# PATH and static env exports live in ~/.zprofile (see zsh/zprofile).
+# This file keeps interactive-only setup: functions, hooks, completions, aliases.
 
-# default editor
-export EDITOR="nvim"
-export VISUAL="$EDITOR"
+# editor aliases
 alias vi="nvim"
 alias vim="nvim"
 
-# nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+# nvm — defines the `nvm` shell function (NVM_DIR is exported in .zprofile)
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                                 # Linux / manual install
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"      # macOS Homebrew
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"                                                    # nvm completion (Linux / manual)
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"      # nvm completion (macOS Homebrew)
 
-# local bin
-export PATH="$HOME/.local/bin:$PATH"
-
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
+# pyenv — defines the `pyenv` shell function (PYENV_ROOT/bin is on PATH in .zprofile)
 command -v pyenv >/dev/null && eval "$(pyenv init -)"
 
-# zoxide
+# zoxide — defines the `z` function and a precmd hook
 command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:$HOME/.lmstudio/bin"
-# End of LM Studio CLI section

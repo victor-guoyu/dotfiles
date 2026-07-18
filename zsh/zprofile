@@ -1,4 +1,31 @@
+# Login-shell setup: PATH and static environment exports.
+# Env vars are inherited by child processes, so this runs once per login and
+# every subshell/tmux pane/script sees it — no need to repeat in .zshrc.
+# Tool inits that define shell functions/hooks (nvm, pyenv init, zoxide) live
+# in .zshrc instead, since functions and hooks are NOT inherited.
+
+# Keep PATH entries unique so repeated login shells (macOS terminals, tmux
+# panes) don't stack duplicate entries.
+typeset -U path PATH
+
 # Homebrew (macOS). No-op on machines where brew isn't at this path.
 if [ -x /opt/homebrew/bin/brew ]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
+
+# default editor
+export EDITOR="nvim"
+export VISUAL="$EDITOR"
+
+# nvm (NVM_DIR only; nvm.sh is sourced in .zshrc to define the `nvm` function)
+export NVM_DIR="$HOME/.nvm"
+
+# pyenv (root + bin on PATH; `pyenv init` runs in .zshrc for the shell function)
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+
+# local bin
+export PATH="$HOME/.local/bin:$PATH"
+
+# LM Studio CLI (lms)
+export PATH="$PATH:$HOME/.lmstudio/bin"
