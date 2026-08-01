@@ -42,6 +42,7 @@ link_dotfiles "hammerspoon" "${HOME}/.hammerspoon"
 # claude code
 mkdir -p "${HOME}/.claude"
 link_dotfiles ".claude/settings.json" "${HOME}/.claude/settings.json"
+link_dotfiles ".claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
 
 # tmux
 link_dotfiles "tmux/tmux.conf" "${HOME}/.tmux.conf"
