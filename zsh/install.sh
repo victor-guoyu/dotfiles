@@ -20,6 +20,12 @@ install_zsh() {
   clone_repo "https://github.com/zsh-users/zsh-history-substring-search" "${zsh_custom}/plugins/zsh-history-substring-search"
   clone_repo "https://github.com/zsh-users/zsh-syntax-highlighting" "${zsh_custom}/plugins/zsh-syntax-highlighting"
 
+  # tool completions — $ZSH_CUSTOM/completions is on oh-my-zsh's fpath
+  if command -v fnm >/dev/null; then
+    mkdir -p "${zsh_custom}/completions"
+    fnm completions --shell zsh >"${zsh_custom}/completions/_fnm"
+  fi
+
   # symlink config
   link_dotfiles "zsh/zshrc" "${HOME}/.zshrc"
   link_dotfiles "zsh/zprofile" "${HOME}/.zprofile"

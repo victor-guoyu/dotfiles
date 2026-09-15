@@ -32,11 +32,9 @@ source $ZSH/oh-my-zsh.sh
 alias vi="nvim"
 alias vim="nvim"
 
-# nvm — defines the `nvm` shell function (NVM_DIR is exported in .zprofile)
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                                 # Linux / manual install
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"      # macOS Homebrew
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"                                                    # nvm completion (Linux / manual)
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"      # nvm completion (macOS Homebrew)
+# fnm — PATH shim for the active node, plus a chpwd hook that switches version
+# per directory (.node-version / .nvmrc / package.json engines)
+command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell zsh)"
 
 # pyenv — defines the `pyenv` shell function (PYENV_ROOT/bin is on PATH in .zprofile)
 command -v pyenv >/dev/null && eval "$(pyenv init -)"

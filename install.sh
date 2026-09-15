@@ -21,9 +21,14 @@ install_package "zoxide"
 brew_install "fd"
 debian_install "fd-find"
 
-# node: required by the typescript LSP server (vtsls/tsserver)
+# node: required by the typescript LSP server (vtsls/tsserver). Kept as the
+# non-interactive fallback too — fnm's node is only on PATH in shells that
+# sourced .zshrc.
 brew_install "node"
 debian_install "nodejs"
+
+# fnm: node version manager (replaces nvm)
+install_fnm
 
 # symlink dotfiles
 # TODO: replace with GNU stow

@@ -28,7 +28,12 @@ symlink targets from that path literally.
 ## What gets installed
 
 - **Packages** (brew on macOS, apt on Ubuntu): tmux, ripgrep, fzf, neovim,
-  zoxide, fd, node — node is needed by the TypeScript LSP server.
+  zoxide, fd, node — node is needed by the TypeScript LSP server, and is the
+  fallback for shells that never sourced `.zshrc`.
+- **fnm** — the node version manager, installed from upstream's script on
+  Ubuntu since there's no apt package. `.zshrc` runs `fnm env --use-on-cd`, so
+  the node version follows `.node-version`, `.nvmrc` or `package.json`
+  `engines` as you `cd`. zsh completions are written to `$ZSH_CUSTOM`.
 - **Casks** (macOS only): ghostty, hammerspoon, rectangle, and the
   Code New Roman Nerd Font.
 - **zsh**: oh-my-zsh, plus autosuggestions, completions,

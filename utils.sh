@@ -161,3 +161,29 @@ clone_repo() {
     git clone "$repo_url" "$destination"
   fi
 }
+
+install_fnm() {
+  if command -v fnm &>/dev/null; then
+    echo "fnm is already installed, skipping"
+    return 0
+  fi
+
+  case "$MACHINE_TYPE" in
+  mac)
+    brew_install "fnm"
+    ;;
+  linux)
+    # No apt package, so use upstream's installer. --skip-shell stops it
+    # appending its own block to the symlinked .zshrc; --install-dir puts the
+    # binary somewhere .zprofile already has on PATH (the default,
+    # ~/.local/share/fnm, is not).
+    echo "Installing fnm via upstream install script..."
+    curl -fsSL https://fnm.vercel.app/install |
+      bash -s -- --skip-shell --install-dir "$HOME/.local/bin"
+    ;;
+  *)
+    echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
+    return 1
+    ;;
+  esac
+}
