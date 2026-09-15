@@ -5,12 +5,13 @@
   "permissions": {
     "defaultMode": "auto"
   },
-  "model": "opus",
+  "model": "opus[1m]",
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true
   },
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
+  "theme": "dark",
   "autoMode": {
     "environment": [
       "### Org-wide",
