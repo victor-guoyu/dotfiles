@@ -30,6 +30,10 @@ debian_install "nodejs"
 # fnm: node version manager (replaces nvm)
 install_fnm
 
+# buf: protobuf toolchain. Backs nvim's proto support — buf_ls is `buf lsp
+# serve` from this same binary, and conform formats .proto with `buf format`.
+install_buf
+
 # symlink dotfiles
 # TODO: replace with GNU stow
 

@@ -187,3 +187,32 @@ install_fnm() {
     ;;
   esac
 }
+
+install_buf() {
+  if command -v buf &>/dev/null; then
+    echo "buf is already installed, skipping"
+    return 0
+  fi
+
+  case "$MACHINE_TYPE" in
+  mac)
+    brew_install "buf"
+    ;;
+  linux)
+    # No apt package. Upstream ships a single static binary per platform,
+    # named buf-$(uname -s)-$(uname -m), so this needs no version pin and no
+    # tarball. ~/.local/bin is already on PATH via .zprofile (same reasoning
+    # as install_fnm).
+    echo "Installing buf via GitHub release..."
+    mkdir -p "$HOME/.local/bin"
+    curl -fsSL \
+      "https://github.com/bufbuild/buf/releases/latest/download/buf-$(uname -s)-$(uname -m)" \
+      -o "$HOME/.local/bin/buf" &&
+      chmod +x "$HOME/.local/bin/buf"
+    ;;
+  *)
+    echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
+    return 1
+    ;;
+  esac
+}
