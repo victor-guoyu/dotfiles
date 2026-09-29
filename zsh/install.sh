@@ -7,6 +7,14 @@ install_zsh() {
   # mac ships zsh; debian may need it
   debian_install "zsh"
 
+  # Linked before oh-my-zsh's installer runs: KEEP_ZSHRC keeps only a .zshrc
+  # that already exists, and otherwise the installer writes its template
+  # there, which link_dotfiles then refuses to replace -- leaving a shell with
+  # none of this config (no z, no aliases, no fnm).
+  replace_omz_template_zshrc
+  link_dotfiles "zsh/zshrc" "${HOME}/.zshrc"
+  link_dotfiles "zsh/zprofile" "${HOME}/.zprofile"
+
   # Official oh-my-zsh installer. KEEP_ZSHRC preserves our symlinked .zshrc,
   # RUNZSH/CHSH keep it non-interactive.
   if [ ! -d "${HOME}/.oh-my-zsh" ]; then
@@ -25,8 +33,18 @@ install_zsh() {
     mkdir -p "${zsh_custom}/completions"
     fnm completions --shell zsh >"${zsh_custom}/completions/_fnm"
   fi
+}
 
-  # symlink config
-  link_dotfiles "zsh/zshrc" "${HOME}/.zshrc"
-  link_dotfiles "zsh/zprofile" "${HOME}/.zprofile"
+# A machine installed before the link moved ahead of oh-my-zsh has the
+# template where the link belongs. Only an exact copy of it is removed:
+# anything else may be someone's own config, and link_dotfiles will report it.
+replace_omz_template_zshrc() {
+  local zshrc="${HOME}/.zshrc"
+  local template="${HOME}/.oh-my-zsh/templates/zshrc.zsh-template"
+
+  if [ -f "$zshrc" ] && [ ! -L "$zshrc" ] && [ -f "$template" ] &&
+    cmp -s "$zshrc" "$template"; then
+    echo "~/.zshrc is oh-my-zsh's template, replacing it with the dotfiles link"
+    rm "$zshrc"
+  fi
 }
