@@ -141,8 +141,11 @@ apt_prepare() {
     return 0
   fi
 
-  # -v asks for the password once; sudo caches it for the rest of the run.
-  if [ "$(id -u)" -ne 0 ] && ! { command -v sudo &>/dev/null && sudo -v; }; then
+  # `sudo true`, not `sudo -v`: -v wants a password unless *every* sudoers
+  # entry for the user is NOPASSWD, so a user in the password-requiring sudo
+  # group with a NOPASSWD rule on top was refused. A real command follows the
+  # rules apt-get will, and still prompts once, which sudo then caches.
+  if [ "$(id -u)" -ne 0 ] && ! { command -v sudo &>/dev/null && sudo true; }; then
     echo "Error: installing packages needs root or sudo, and $(id -un) has neither." >&2
     echo "The config is linked already. For the packages, re-run install.sh as root" >&2
     echo "(in a container: docker exec -u root ...), then again as $(id -un)." >&2
