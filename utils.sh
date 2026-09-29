@@ -171,29 +171,32 @@ install_neovim() {
     if command -v nvim &>/dev/null &&
       nvim --clean --headless -c 'if has("nvim-0.11.2") | qa | else | cq | endif' &>/dev/null; then
       echo "neovim $(nvim --version | head -1) is already installed, skipping"
-      return 0
-    fi
-
-    local arch
-    case "$(uname -m)" in
-    x86_64) arch="x86_64" ;;
-    aarch64 | arm64) arch="arm64" ;;
-    *)
-      echo "Error: no neovim release build for $(uname -m)" >&2
-      return 1
-      ;;
-    esac
-
-    # With root, /usr/local: it is on every default PATH ahead of /usr/bin, so
-    # every user and every shell gets it, a bare `docker exec bash` included.
-    # sudo -n never prompts, and passes on a NOPASSWD rule or a password
-    # apt_prepare already asked for. Without root, ~/.local, which only
-    # .zprofile puts on PATH.
-    if [ "$(id -u)" -eq 0 ] || sudo -n true 2>/dev/null; then
-      install_nvim_release "$arch" "/usr/local" as_root
     else
-      install_nvim_release "$arch" "$HOME/.local" command
+      local arch
+      case "$(uname -m)" in
+      x86_64) arch="x86_64" ;;
+      aarch64 | arm64) arch="arm64" ;;
+      *)
+        echo "Error: no neovim release build for $(uname -m)" >&2
+        return 1
+        ;;
+      esac
+
+      # With root, /usr/local: it is on every default PATH ahead of /usr/bin,
+      # so every user and every shell gets it, a bare `docker exec bash`
+      # included. sudo -n never prompts, and passes on a NOPASSWD rule or a
+      # password apt_prepare already asked for. Without root, ~/.local, which
+      # only .zprofile puts on PATH.
+      if [ "$(id -u)" -eq 0 ] || sudo -n true 2>/dev/null; then
+        install_nvim_release "$arch" "/usr/local" as_root
+      else
+        install_nvim_release "$arch" "$HOME/.local" command
+      fi
     fi
+
+    # Even when skipped above: a machine that already has the release build
+    # may still have apt's registered as vi.
+    register_nvim_alternatives
     ;;
   *)
     echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
@@ -249,6 +252,22 @@ install_fzf() {
     return 1
     ;;
   esac
+}
+
+# vi, vim and editor are not found on PATH: they are Debian alternatives,
+# absolute symlinks that apt's neovim points at /usr/bin/nvim (0.9.5), so
+# `vi` -- and git or crontab falling back to `editor` -- still started the
+# old one. Priority 60 outranks apt's neovim and vim (30 each); --install
+# leaves an alternative the user set by hand alone. System-wide, so only
+# for the /usr/local build and only with root.
+register_nvim_alternatives() {
+  local nvim="/usr/local/bin/nvim" name
+  if [ ! -x "$nvim" ] || ! { [ "$(id -u)" -eq 0 ] || sudo -n true 2>/dev/null; }; then
+    return 0
+  fi
+  for name in vi vim editor; do
+    as_root update-alternatives --install "/usr/bin/${name}" "$name" "$nvim" 60
+  done
 }
 
 # $3 runs each write: as_root for a system prefix, `command` (a plain run)
