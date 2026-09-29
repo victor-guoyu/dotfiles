@@ -27,9 +27,12 @@ symlink targets from that path literally.
 
 ## What gets installed
 
-- **Packages** (brew on macOS, apt on Ubuntu): tmux, ripgrep, fzf, neovim,
-  zoxide, fd, node — node is needed by the TypeScript LSP server, and is the
-  fallback for shells that never sourced `.zshrc`.
+- **Packages** (brew on macOS, apt on Ubuntu): tmux, ripgrep, fzf, zoxide, fd,
+  node — node is needed by the TypeScript LSP server, and is the fallback for
+  shells that never sourced `.zshrc`. On Ubuntu also git, curl, unzip and
+  build-essential, which a bare image lacks and Mason and treesitter need.
+- **Neovim**: brew on macOS. On Ubuntu, upstream's latest release build in
+  `~/.local/bin` — apt's is 0.9.5 on 24.04, and LazyVim needs 0.11.2 or later.
 - **fnm** — the node version manager, installed from upstream's script on
   Ubuntu since there's no apt package. `.zshrc` runs `fnm env --use-on-cd`, so
   the node version follows `.node-version`, `.nvmrc` or `package.json`
@@ -40,6 +43,28 @@ symlink targets from that path literally.
   history-substring-search and syntax-highlighting.
 
 On Ubuntu the Homebrew and cask steps are skipped rather than failing.
+
+## In a container
+
+apt needs root. The script uses it directly as root and through `sudo`
+otherwise, and stops with an error if a package is missing and neither works —
+the usual case for a container's non-root user, which has sudo but no
+password. The config is linked before any installs, so it is in place either
+way. Run it as root first, then as the user for their own `~/.local` tools.
+Each needs its own clone at `~/dotfiles`, since the links are built from that
+path:
+
+```sh
+docker exec -u root <container> bash -c 'git clone https://github.com/victor-guoyu/dotfiles.git ~/dotfiles && ~/dotfiles/install.sh'
+docker exec <container> bash -c 'git clone https://github.com/victor-guoyu/dotfiles.git ~/dotfiles && ~/dotfiles/install.sh'
+docker exec -it <container> zsh -l
+```
+
+A bare `ubuntu` image has no git for that first clone:
+`apt-get update && apt-get install -y git` as root, before it.
+
+Enter with `zsh -l`: `.zprofile` is what puts `~/.local/bin`, and so the
+release Neovim, ahead of apt's.
 
 ## Notes
 
