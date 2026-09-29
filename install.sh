@@ -59,6 +59,10 @@ debian_install "fd-find"
 # sourced .zshrc.
 brew_install "node"
 debian_install "nodejs"
+# Ubuntu splits npm out of nodejs (brew's node bundles it), and Mason installs
+# pyright and vtsls with npm -- without it both fail with "Could not find
+# executable npm".
+debian_install "npm"
 
 # fnm: node version manager (replaces nvm)
 install_fnm
