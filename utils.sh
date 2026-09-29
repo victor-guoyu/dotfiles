@@ -20,6 +20,10 @@ Linux)
   ;;
 esac
 
+# Set by apt_prepare once the first missing package has had the root check
+# and the apt refresh, so the rest of the run skips both.
+APT_PREPARED=""
+
 link_dotfiles() {
   local src="$1"
   local destination="$2"
@@ -112,13 +116,84 @@ debian_install() {
     return 0
   fi
 
-  # Check if already installed
-  if dpkg -l | grep -q "^ii.*$package_name"; then
+  # Check if already installed. dpkg-query matches the exact package name;
+  # grepping `dpkg -l` let "zsh" match "zsh-common" and skip the real one.
+  if dpkg-query -W -f='${Status}' "$package_name" 2>/dev/null | grep -q "ok installed"; then
     echo "$package_name is already installed, skipping"
   else
+    apt_prepare || exit 1
     echo "Installing $package_name via apt-get..."
-    sudo apt-get install -y "$package_name"
+    as_root env DEBIAN_FRONTEND=noninteractive apt-get install -y "$package_name"
   fi
+}
+
+as_root() {
+  if [ "$(id -u)" -eq 0 ]; then "$@"; else sudo "$@"; fi
+}
+
+# apt needs root: directly when we are root (a fresh container), otherwise
+# through sudo. Checked at the first package that is actually missing, so a
+# container user with sudo but no password stops with a reason rather than
+# sudo's bare "a password is required" -- and a re-run after root installed
+# the packages goes through, since it needs no root.
+apt_prepare() {
+  if [ -n "$APT_PREPARED" ]; then
+    return 0
+  fi
+
+  # `sudo true`, not `sudo -v`: -v wants a password unless *every* sudoers
+  # entry for the user is NOPASSWD, so a user in the password-requiring sudo
+  # group with a NOPASSWD rule on top was refused. A real command follows the
+  # rules apt-get will, and still prompts once, which sudo then caches.
+  if [ "$(id -u)" -ne 0 ] && ! { command -v sudo &>/dev/null && sudo true; }; then
+    echo "Error: installing packages needs root or sudo, and $(id -un) has neither." >&2
+    echo "The config is linked already. For the packages, re-run install.sh as root" >&2
+    echo "(in a container: docker exec -u root ...), then again as $(id -un)." >&2
+    return 1
+  fi
+
+  # Container images delete /var/lib/apt/lists to stay small, and then every
+  # install fails with "has no installation candidate".
+  echo "Refreshing the apt package lists..."
+  as_root apt-get update
+  APT_PREPARED=1
+}
+
+install_neovim() {
+  case "$MACHINE_TYPE" in
+  mac)
+    brew_install "neovim"
+    ;;
+  linux)
+    # Not apt: Ubuntu 24.04 ships 0.9.5 and LazyVim refuses anything below
+    # 0.11.2. Upstream's release build goes under ~/.local, so it needs no
+    # root, and .zprofile puts ~/.local/bin ahead of /usr/bin.
+    if [ -x "$HOME/.local/bin/nvim" ]; then
+      echo "neovim is already installed in ~/.local/bin, skipping"
+      return 0
+    fi
+
+    local arch
+    case "$(uname -m)" in
+    x86_64) arch="x86_64" ;;
+    aarch64 | arm64) arch="arm64" ;;
+    *)
+      echo "Error: no neovim release build for $(uname -m)" >&2
+      return 1
+      ;;
+    esac
+
+    echo "Installing neovim via GitHub release..."
+    mkdir -p "$HOME/.local/opt" "$HOME/.local/bin"
+    curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz" |
+      tar -xz -C "$HOME/.local/opt"
+    ln -sf "$HOME/.local/opt/nvim-linux-${arch}/bin/nvim" "$HOME/.local/bin/nvim"
+    ;;
+  *)
+    echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
+    return 1
+    ;;
+  esac
 }
 
 install_cask() {
