@@ -202,6 +202,55 @@ install_neovim() {
   esac
 }
 
+install_fzf() {
+  case "$MACHINE_TYPE" in
+  mac)
+    brew_install "fzf"
+    ;;
+  linux)
+    # Not apt: Ubuntu 24.04 ships 0.44, which rejects options plugins now
+    # pass -- venv-selector's picker fails with "unknown option:
+    # --smart-case". Asked of the fzf first on PATH, as with nvim; --version
+    # would not do, it answers before the other options are checked.
+    if command -v fzf &>/dev/null && echo x | fzf --smart-case --filter x &>/dev/null; then
+      echo "fzf $(fzf --version) is already installed, skipping"
+      return 0
+    fi
+
+    local arch
+    case "$(uname -m)" in
+    x86_64) arch="amd64" ;;
+    aarch64 | arm64) arch="arm64" ;;
+    *)
+      echo "Error: no fzf release build for $(uname -m)" >&2
+      return 1
+      ;;
+    esac
+
+    # The asset name carries the version, so /releases/latest/download cannot
+    # name it; the redirect from /releases/latest gives the tag.
+    local tag
+    tag="$(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/junegunn/fzf/releases/latest)"
+    tag="${tag##*/v}"
+
+    # Where and why, as for nvim (see install_neovim).
+    local prefix="$HOME/.local" run="command"
+    if [ "$(id -u)" -eq 0 ] || sudo -n true 2>/dev/null; then
+      prefix="/usr/local" run="as_root"
+    fi
+
+    echo "Installing fzf ${tag} into ${prefix} via GitHub release..."
+    "$run" mkdir -p "$prefix/bin"
+    curl -fsSL "https://github.com/junegunn/fzf/releases/download/v${tag}/fzf-${tag}-linux_${arch}.tar.gz" |
+      "$run" tar -xz --no-same-owner -C "$prefix/bin" fzf
+    ;;
+  *)
+    echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
+    return 1
+    ;;
+  esac
+}
+
 # $3 runs each write: as_root for a system prefix, `command` (a plain run)
 # for one in $HOME, which must stay owned by the user. --no-same-owner because
 # tar as root otherwise keeps the archive's uid, which is upstream's build

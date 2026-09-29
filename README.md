@@ -27,14 +27,18 @@ symlink targets from that path literally.
 
 ## What gets installed
 
-- **Packages** (brew on macOS, apt on Ubuntu): tmux, ripgrep, fzf, zoxide, fd,
+- **Packages** (brew on macOS, apt on Ubuntu): tmux, ripgrep, zoxide, fd,
   node — node is needed by the TypeScript LSP server, and is the fallback for
   shells that never sourced `.zshrc`. On Ubuntu also npm, which apt keeps
   apart from node and Mason installs pyright and vtsls with, and git, curl,
   unzip and build-essential, which a bare image lacks and Mason and
   treesitter need.
-- **Neovim**: brew on macOS. On Ubuntu, upstream's latest release build in
-  `~/.local/bin` — apt's is 0.9.5 on 24.04, and LazyVim needs 0.11.2 or later.
+- **Neovim and fzf**: brew on macOS. On Ubuntu, upstream's latest release
+  builds, since apt's are too old for the plugins: Neovim 0.9.5 (LazyVim needs
+  0.11.2 or later) and fzf 0.44 (venv-selector passes `--smart-case`, which it
+  rejects). They go into `/usr/local/bin` when root or passwordless sudo is
+  available, so every shell finds them ahead of apt's, and otherwise into
+  `~/.local/bin`, which only `.zprofile` puts on PATH.
 - **fnm** — the node version manager, installed from upstream's script on
   Ubuntu since there's no apt package. `.zshrc` runs `fnm env --use-on-cd`, so
   the node version follows `.node-version`, `.nvmrc` or `package.json`
