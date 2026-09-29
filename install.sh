@@ -47,7 +47,7 @@ debian_install "build-essential"
 
 install_package "tmux"
 install_package "ripgrep"
-install_package "fzf"
+install_fzf
 install_package "zoxide"
 install_neovim
 
