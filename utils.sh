@@ -166,10 +166,11 @@ install_neovim() {
     ;;
   linux)
     # Not apt: Ubuntu 24.04 ships 0.9.5 and LazyVim refuses anything below
-    # 0.11.2. Upstream's release build goes under ~/.local, so it needs no
-    # root, and .zprofile puts ~/.local/bin ahead of /usr/bin.
-    if [ -x "$HOME/.local/bin/nvim" ]; then
-      echo "neovim is already installed in ~/.local/bin, skipping"
+    # 0.11.2. Asked of the nvim first on PATH -- the one a shell will run --
+    # so an old apt nvim ahead of a good one is not taken as installed.
+    if command -v nvim &>/dev/null &&
+      nvim --clean --headless -c 'if has("nvim-0.11.2") | qa | else | cq | endif' &>/dev/null; then
+      echo "neovim $(nvim --version | head -1) is already installed, skipping"
       return 0
     fi
 
@@ -183,17 +184,36 @@ install_neovim() {
       ;;
     esac
 
-    echo "Installing neovim via GitHub release..."
-    mkdir -p "$HOME/.local/opt" "$HOME/.local/bin"
-    curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz" |
-      tar -xz -C "$HOME/.local/opt"
-    ln -sf "$HOME/.local/opt/nvim-linux-${arch}/bin/nvim" "$HOME/.local/bin/nvim"
+    # With root, /usr/local: it is on every default PATH ahead of /usr/bin, so
+    # every user and every shell gets it, a bare `docker exec bash` included.
+    # sudo -n never prompts, and passes on a NOPASSWD rule or a password
+    # apt_prepare already asked for. Without root, ~/.local, which only
+    # .zprofile puts on PATH.
+    if [ "$(id -u)" -eq 0 ] || sudo -n true 2>/dev/null; then
+      install_nvim_release "$arch" "/usr/local" as_root
+    else
+      install_nvim_release "$arch" "$HOME/.local" command
+    fi
     ;;
   *)
     echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
     return 1
     ;;
   esac
+}
+
+# $3 runs each write: as_root for a system prefix, `command` (a plain run)
+# for one in $HOME, which must stay owned by the user. --no-same-owner because
+# tar as root otherwise keeps the archive's uid, which is upstream's build
+# user -- a stranger's uid on a binary every user runs.
+install_nvim_release() {
+  local arch="$1" prefix="$2" run="$3"
+
+  echo "Installing neovim into ${prefix} via GitHub release..."
+  "$run" mkdir -p "$prefix/opt" "$prefix/bin"
+  curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz" |
+    "$run" tar -xz --no-same-owner -C "$prefix/opt"
+  "$run" ln -sf "$prefix/opt/nvim-linux-${arch}/bin/nvim" "$prefix/bin/nvim"
 }
 
 install_cask() {
