@@ -379,3 +379,56 @@ install_buf() {
     ;;
   esac
 }
+
+# Prints the version of a GitHub repo's latest release, without the "v". The
+# asset names carry it, so /releases/latest/download cannot name them; the
+# redirect from /releases/latest gives the tag (as in install_fzf).
+latest_release() {
+  local tag
+  tag="$(curl -fsSLI -o /dev/null -w '%{url_effective}' "https://github.com/$1/releases/latest")"
+  echo "${tag##*/v}"
+}
+
+# jsonnetfmt and jsonnet-language-server, for nvim's jsonnet support. Not
+# Mason: its packages for both are `go install` builds and there is no Go
+# here. Brew has go-jsonnet but not the server; apt's jsonnet is the C++
+# implementation and has no server either. Upstream ships static binaries,
+# put in ~/.local/bin (on PATH via .zprofile, as for buf).
+install_jsonnet() {
+  local os arch
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  case "$(uname -m)" in
+  x86_64) arch="amd64" ;;
+  aarch64 | arm64) arch="arm64" ;;
+  *)
+    echo "Error: no jsonnet release build for $(uname -m)" >&2
+    return 1
+    ;;
+  esac
+
+  mkdir -p "$HOME/.local/bin"
+
+  if command -v jsonnetfmt &>/dev/null; then
+    echo "jsonnetfmt is already installed, skipping"
+  elif [ "$MACHINE_TYPE" = "mac" ]; then
+    brew_install "go-jsonnet"
+  else
+    local version
+    version="$(latest_release google/go-jsonnet)"
+    echo "Installing go-jsonnet ${version} via GitHub release..."
+    curl -fsSL "https://github.com/google/go-jsonnet/releases/download/v${version}/go-jsonnet_${version}_${os}_${arch}.tar.gz" |
+      tar -xz -C "$HOME/.local/bin" jsonnet jsonnetfmt
+  fi
+
+  if command -v jsonnet-language-server &>/dev/null; then
+    echo "jsonnet-language-server is already installed, skipping"
+  else
+    local version
+    version="$(latest_release grafana/jsonnet-language-server)"
+    echo "Installing jsonnet-language-server ${version} via GitHub release..."
+    curl -fsSL \
+      "https://github.com/grafana/jsonnet-language-server/releases/download/v${version}/jsonnet-language-server_${version}_${os}_${arch}" \
+      -o "$HOME/.local/bin/jsonnet-language-server" &&
+      chmod +x "$HOME/.local/bin/jsonnet-language-server"
+  fi
+}

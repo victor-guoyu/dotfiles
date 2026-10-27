@@ -71,6 +71,9 @@ install_fnm
 # serve` from this same binary, and conform formats .proto with `buf format`.
 install_buf
 
+# jsonnet: jsonnetfmt and jsonnet-language-server, for nvim's jsonnet support.
+install_jsonnet
+
 # zsh
 install_zsh
 
