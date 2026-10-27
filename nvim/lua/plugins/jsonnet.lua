@@ -4,9 +4,8 @@
 -- LazyVim ships no `lang.jsonnet` extra, so the pieces are wired by hand, as
 -- for proto. Neovim already detects .jsonnet and .libsonnet as `jsonnet`.
 --
--- Both binaries come from install.sh, not Mason: Mason's packages for them are
--- `go install` builds, which fail without a Go toolchain, while upstream ships
--- prebuilt binaries for every platform we run on.
+-- Mason installs both: they are `go install` builds, so they need the Go that
+-- install.sh puts on PATH through mise.
 
 return {
   {
@@ -15,13 +14,19 @@ return {
     opts = { ensure_installed = { "jsonnet" } },
   },
 
+  -- mason-lspconfig installs the server for jsonnet_ls on its own.
   {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        jsonnet_ls = { mason = false },
+        jsonnet_ls = {},
       },
     },
+  },
+
+  {
+    "mason-org/mason.nvim",
+    opts = { ensure_installed = { "jsonnetfmt" } },
   },
 
   -- A CLI formatter rather than the server's formatting, for the reason in
