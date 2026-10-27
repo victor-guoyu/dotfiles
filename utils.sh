@@ -379,3 +379,36 @@ install_buf() {
     ;;
   esac
 }
+
+# mise: version manager for Go (and whatever a project's mise.toml pins).
+# The tools it installs come from mise/config.toml, linked to ~/.config/mise.
+install_mise() {
+  # ~/.local/bin is where upstream's installer puts it, and is on PATH only
+  # in a login shell (.zprofile), not in this script.
+  local mise
+  mise="$(command -v mise || echo "$HOME/.local/bin/mise")"
+
+  if [ -x "$mise" ]; then
+    echo "mise is already installed, skipping"
+  else
+    case "$MACHINE_TYPE" in
+    mac)
+      brew_install "mise"
+      mise="$(brew --prefix)/bin/mise"
+      ;;
+    linux)
+      # No apt package in Ubuntu's own archive; upstream's installer puts a
+      # single binary in ~/.local/bin.
+      echo "Installing mise via upstream install script..."
+      curl -fsSL https://mise.run | sh
+      ;;
+    *)
+      echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
+      return 1
+      ;;
+    esac
+  fi
+
+  echo "Installing mise's global tools..."
+  "$mise" install --yes
+}

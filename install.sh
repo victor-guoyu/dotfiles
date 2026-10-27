@@ -29,6 +29,9 @@ link_dotfiles ".claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
 # tmux
 link_dotfiles "tmux/tmux.conf" "${HOME}/.tmux.conf"
 
+# mise
+link_dotfiles "mise" "${XDG_CONFIG_HOME}/mise"
+
 # install packages
 install_homebrew
 install_cask "font-code-new-roman-nerd-font"
@@ -66,6 +69,10 @@ debian_install "npm"
 
 # fnm: node version manager (replaces nvm)
 install_fnm
+
+# mise: Go, and the tools a repo's mise.toml pins. nvim's Go support needs
+# it: Mason builds gopls, goimports, gofumpt and delve with `go install`.
+install_mise
 
 # buf: protobuf toolchain. Backs nvim's proto support — buf_ls is `buf lsp
 # serve` from this same binary, and conform formats .proto with `buf format`.

@@ -22,6 +22,8 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.python" },
     -- enable typescript LSP
     { import = "lazyvim.plugins.extras.lang.typescript" },
+    -- enable go LSP (Mason builds its tools with the Go from mise)
+    { import = "lazyvim.plugins.extras.lang.go" },
     -- import/override with your plugins
     { import = "plugins" },
   },
