@@ -32,15 +32,11 @@ source $ZSH/oh-my-zsh.sh
 alias vi="nvim"
 alias vim="nvim"
 
-# fnm — PATH shim for the active node, plus a chpwd hook that switches version
-# per directory (.node-version / .nvmrc / package.json engines)
-command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell zsh)"
-
 # pyenv — defines the `pyenv` shell function (PYENV_ROOT/bin is on PATH in .zprofile)
 command -v pyenv >/dev/null && eval "$(pyenv init -)"
 
-# mise — a hook that puts the active tools on PATH and loads a mise.toml's
-# [env] per directory (the shims on PATH from .zprofile cover non-interactive use)
+# mise — a hook that puts the active tools (go, node) on PATH per directory,
+# from a mise.toml or a .nvmrc / .node-version, and loads a mise.toml's [env] (the shims on PATH from .zprofile cover non-interactive use)
 command -v mise >/dev/null && eval "$(mise activate zsh)"
 
 # zoxide — defines the `z` function and a precmd hook
