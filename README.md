@@ -21,6 +21,7 @@ symlink targets from that path literally.
 | `ghostty/` | `~/.config/ghostty` | terminal, incl. macOS key remaps |
 | `zsh/zshrc`, `zsh/zprofile` | `~/.zshrc`, `~/.zprofile` | oh-my-zsh + plugins |
 | `tmux/tmux.conf` | `~/.tmux.conf` | tpm is cloned on install |
+| `mise/` | `~/.config/mise` | global Go and node versions |
 | `hammerspoon/` | `~/.hammerspoon` | macOS window management (mac only) |
 | `.claude/CLAUDE.md`, `.claude/settings.json` | `~/.claude/` | Claude Code |
 | `alacritty/` | — | kept, but not linked by `install.sh` |
@@ -28,8 +29,8 @@ symlink targets from that path literally.
 ## What gets installed
 
 - **Packages** (brew on macOS, apt on Ubuntu): tmux, ripgrep, zoxide, fd,
-  node — node is needed by the TypeScript LSP server, and is the fallback for
-  shells that never sourced `.zshrc`. On Ubuntu also npm, which apt keeps
+  node — node is needed by the TypeScript LSP server; this system copy is a
+  fallback, since mise manages the one you use. On Ubuntu also npm, which apt keeps
   apart from node and Mason installs pyright and vtsls with, and git, curl,
   unzip and build-essential, which a bare image lacks and Mason and
   treesitter need.
@@ -39,10 +40,13 @@ symlink targets from that path literally.
   rejects). They go into `/usr/local/bin` when root or passwordless sudo is
   available, so every shell finds them ahead of apt's, and otherwise into
   `~/.local/bin`, which only `.zprofile` puts on PATH.
-- **fnm** — the node version manager, installed from upstream's script on
-  Ubuntu since there's no apt package. `.zshrc` runs `fnm env --use-on-cd`, so
-  the node version follows `.node-version`, `.nvmrc` or `package.json`
-  `engines` as you `cd`. zsh completions are written to `$ZSH_CUSTOM`.
+- **mise** — the version manager for Go and node, from brew on macOS and
+  upstream's script on Ubuntu. `install.sh` runs `mise install` for the
+  global versions in `mise/config.toml`. `.zshrc` runs `mise activate`, so
+  the versions follow a repo's `mise.toml`, `.nvmrc` or `.node-version` as
+  you `cd` (not `package.json` `engines`); `.zprofile` puts mise's shims on
+  PATH for scripts and for nvim, whose Mason builds the Go tools with
+  `go install`. A repo's `mise.toml` takes effect only after `mise trust`.
 - **Casks** (macOS only): ghostty, hammerspoon, rectangle, and the
   Code New Roman Nerd Font.
 - **zsh**: oh-my-zsh, plus autosuggestions, completions,

@@ -10,7 +10,7 @@ install_zsh() {
   # Linked before oh-my-zsh's installer runs: KEEP_ZSHRC keeps only a .zshrc
   # that already exists, and otherwise the installer writes its template
   # there, which link_dotfiles then refuses to replace -- leaving a shell with
-  # none of this config (no z, no aliases, no fnm).
+  # none of this config (no z, no aliases, no mise).
   replace_omz_template_zshrc
   link_dotfiles "zsh/zshrc" "${HOME}/.zshrc"
   link_dotfiles "zsh/zprofile" "${HOME}/.zprofile"
@@ -27,12 +27,6 @@ install_zsh() {
   clone_repo "https://github.com/zsh-users/zsh-completions" "${zsh_custom}/plugins/zsh-completions"
   clone_repo "https://github.com/zsh-users/zsh-history-substring-search" "${zsh_custom}/plugins/zsh-history-substring-search"
   clone_repo "https://github.com/zsh-users/zsh-syntax-highlighting" "${zsh_custom}/plugins/zsh-syntax-highlighting"
-
-  # tool completions — $ZSH_CUSTOM/completions is on oh-my-zsh's fpath
-  if command -v fnm >/dev/null; then
-    mkdir -p "${zsh_custom}/completions"
-    fnm completions --shell zsh >"${zsh_custom}/completions/_fnm"
-  fi
 }
 
 # A machine installed before the link moved ahead of oh-my-zsh has the

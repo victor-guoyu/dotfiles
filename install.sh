@@ -57,9 +57,9 @@ install_neovim
 brew_install "fd"
 debian_install "fd-find"
 
-# node: required by the typescript LSP server (vtsls/tsserver). Kept as the
-# non-interactive fallback too — fnm's node is only on PATH in shells that
-# sourced .zshrc.
+# node: required by the typescript LSP server (vtsls/tsserver). mise manages
+# the node you use (see mise/config.toml); this system one is a fallback for
+# anything that runs before mise's shims are on PATH.
 brew_install "node"
 debian_install "nodejs"
 # Ubuntu splits npm out of nodejs (brew's node bundles it), and Mason installs
@@ -67,11 +67,8 @@ debian_install "nodejs"
 # executable npm".
 debian_install "npm"
 
-# fnm: node version manager (replaces nvm)
-install_fnm
-
-# mise: Go, and the tools a repo's mise.toml pins. nvim's Go support needs
-# it: Mason builds gopls, goimports, gofumpt and delve with `go install`.
+# mise: Go and node, and the tools a repo's mise.toml pins. nvim's Go support
+# needs it: Mason builds gopls, goimports, gofumpt and delve with `go install`.
 install_mise
 
 # buf: protobuf toolchain. Backs nvim's proto support — buf_ls is `buf lsp

@@ -7,3 +7,12 @@
 # a go.mod asks for by itself (GOTOOLCHAIN=auto), so this needn't track
 # projects.
 go = "latest"
+# Default node, for the shell and for Mason's npm installs (pyright, vtsls).
+node = "24"
+
+[settings]
+# Follow a repo's .nvmrc / .node-version, as fnm's --use-on-cd did. Off by
+# default in mise, so without this only repos whose own mise.toml asks for
+# it (grafana's does) would switch. Unlike fnm, mise ignores package.json's
+# "engines".
+idiomatic_version_file_enable_tools = ["node"]

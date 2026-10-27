@@ -325,32 +325,6 @@ clone_repo() {
   fi
 }
 
-install_fnm() {
-  if command -v fnm &>/dev/null; then
-    echo "fnm is already installed, skipping"
-    return 0
-  fi
-
-  case "$MACHINE_TYPE" in
-  mac)
-    brew_install "fnm"
-    ;;
-  linux)
-    # No apt package, so use upstream's installer. --skip-shell stops it
-    # appending its own block to the symlinked .zshrc; --install-dir puts the
-    # binary somewhere .zprofile already has on PATH (the default,
-    # ~/.local/share/fnm, is not).
-    echo "Installing fnm via upstream install script..."
-    curl -fsSL https://fnm.vercel.app/install |
-      bash -s -- --skip-shell --install-dir "$HOME/.local/bin"
-    ;;
-  *)
-    echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
-    return 1
-    ;;
-  esac
-}
-
 install_buf() {
   if command -v buf &>/dev/null; then
     echo "buf is already installed, skipping"
@@ -364,8 +338,7 @@ install_buf() {
   linux)
     # No apt package. Upstream ships a single static binary per platform,
     # named buf-$(uname -s)-$(uname -m), so this needs no version pin and no
-    # tarball. ~/.local/bin is already on PATH via .zprofile (same reasoning
-    # as install_fnm).
+    # tarball. ~/.local/bin is already on PATH via .zprofile.
     echo "Installing buf via GitHub release..."
     mkdir -p "$HOME/.local/bin"
     curl -fsSL \
@@ -380,7 +353,8 @@ install_buf() {
   esac
 }
 
-# mise: version manager for Go (and whatever a project's mise.toml pins).
+# mise: version manager for Go and node (and whatever a project's mise.toml
+# pins).
 # The tools it installs come from mise/config.toml, linked to ~/.config/mise.
 install_mise() {
   # ~/.local/bin is where upstream's installer puts it, and is on PATH only
