@@ -28,5 +28,10 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 # local bin
 export PATH="$HOME/.local/bin:$PATH"
 
+# mise shims, for what never runs .zshrc's `mise activate`: scripts, and
+# nvim's Mason, whose `go install` builds need `go`. Each shim picks the
+# version from the mise.toml of the directory it runs in.
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+
 # LM Studio CLI (lms)
 export PATH="$PATH:$HOME/.lmstudio/bin"

@@ -1,0 +1,9 @@
+# Global mise tools: the versions used outside any project with its own
+# mise.toml. Linked to ~/.config/mise by install.sh.
+
+[tools]
+# One recent Go for everything outside a pinned repo, Mason's `go install`
+# builds of gopls and friends included. Go fetches whatever newer toolchain
+# a go.mod asks for by itself (GOTOOLCHAIN=auto), so this needn't track
+# projects.
+go = "latest"
