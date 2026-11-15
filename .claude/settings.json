@@ -6,8 +6,33 @@
     "defaultMode": "auto"
   },
   "model": "opus[1m]",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Glass.aiff",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Ping.aiff",
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
-    "pyright-lsp@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true
   },
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
@@ -38,30 +63,6 @@
       "**Trusted repo**: /Users/victorg/Documents/workspace/leetcode and its configured remote github.com:victor-guoyu/leetcode.git (private). Confidential material is fine in this private repo; secrets and sensitive data (personal & entrusted) are never cleared into any repo by its visibility (see Definitions).",
       "**Org-specific CLIs**: None configured",
       "**Routine under user prefix**: no `<user>/` prefix conventions observed in this repo"
-    ]
-  },
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "afplay /System/Library/Sounds/Glass.aiff",
-            "async": true
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "afplay /System/Library/Sounds/Ping.aiff",
-            "async": true
-          }
-        ]
-      }
     ]
   }
 }
