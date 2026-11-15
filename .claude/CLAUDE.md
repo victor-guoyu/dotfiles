@@ -16,6 +16,15 @@ self-evident.
 
     fix(nvim): stop checktime from clobbering the buffer while typing
 
+Don't nudge me to commit. I iterate in a dirty working tree on purpose and
+I'll commit when I'm ready. Leave changes as they are and say nothing about
+it: no "ready to commit?", no "nothing is committed yet", no offers to commit
+or push, no closing line reporting the state of the tree. Touch git only when
+I actually ask, and mention it only then.
+
+Same for untracked files you create or notice along the way — tell me what
+you changed, not what git thinks of it.
+
 ## Editor
 
 I use Neovim (LazyVim distribution) on macOS, in Ghostty. Config lives in
