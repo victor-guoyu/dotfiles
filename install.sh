@@ -48,6 +48,7 @@ debian_install "curl"
 debian_install "unzip"
 debian_install "build-essential"
 
+install_package "wget"
 install_package "tmux"
 install_package "ripgrep"
 install_fzf
