@@ -34,9 +34,12 @@
     "pyright-lsp@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true
   },
+  "sandbox": {
+    "enabled": false
+  },
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
-  "theme": "dark",
+  "theme": "auto",
   "autoMode": {
     "environment": [
       "### Org-wide",
