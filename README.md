@@ -28,7 +28,7 @@ symlink targets from that path literally.
 
 ## What gets installed
 
-- **Packages** (brew on macOS, apt on Ubuntu): tmux, ripgrep, zoxide, fd,
+- **Packages** (brew on macOS, apt on Ubuntu): tmux, ripgrep, tree, zoxide, fd,
   node — node is needed by the TypeScript LSP server; this system copy is a
   fallback, since mise manages the one you use. On Ubuntu also npm, which apt keeps
   apart from node and Mason installs pyright and vtsls with, and git, curl,
