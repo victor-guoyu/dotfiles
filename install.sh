@@ -77,6 +77,10 @@ install_mise
 # serve` from this same binary, and conform formats .proto with `buf format`.
 install_buf
 
+# cue: the CUE CLI. Backs nvim's CUE support — `cue lsp` is the language
+# server and conform formats .cue with `cue fmt`.
+install_cue
+
 # zsh
 install_zsh
 

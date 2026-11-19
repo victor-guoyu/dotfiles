@@ -34,6 +34,10 @@ symlink targets from that path literally.
   apart from node and Mason installs pyright and vtsls with, and git, curl,
   unzip and build-essential, which a bare image lacks and Mason and
   treesitter need.
+- **cue**: brew on macOS; on Ubuntu, upstream's latest release into
+  `~/.local/bin` (apt has no package). Its CLI is nvim's CUE
+  language server (`cue lsp`) and formatter (`cue fmt`); see
+  `nvim/lua/plugins/cue.lua`.
 - **Neovim and fzf**: brew on macOS. On Ubuntu, upstream's latest release
   builds, since apt's are too old for the plugins: Neovim 0.9.5 (LazyVim needs
   0.11.2 or later) and fzf 0.44 (venv-selector passes `--smart-case`, which it

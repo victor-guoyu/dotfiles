@@ -353,6 +353,47 @@ install_buf() {
   esac
 }
 
+install_cue() {
+  if command -v cue &>/dev/null; then
+    echo "cue is already installed, skipping"
+    return 0
+  fi
+
+  case "$MACHINE_TYPE" in
+  mac)
+    brew_install "cue"
+    ;;
+  linux)
+    # No apt package. Upstream ships a tarball per platform, but the asset
+    # name carries the version, so /releases/latest/download cannot name it;
+    # the redirect from /releases/latest gives the tag. ~/.local/bin is
+    # already on PATH via .zprofile.
+    local arch
+    case "$(uname -m)" in
+    x86_64) arch="amd64" ;;
+    aarch64 | arm64) arch="arm64" ;;
+    *)
+      echo "Error: no cue release build for $(uname -m)" >&2
+      return 1
+      ;;
+    esac
+
+    local tag
+    tag="$(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/cue-lang/cue/releases/latest)"
+    tag="${tag##*/}"
+
+    echo "Installing cue ${tag} via GitHub release..."
+    mkdir -p "$HOME/.local/bin"
+    curl -fsSL "https://github.com/cue-lang/cue/releases/download/${tag}/cue_${tag}_linux_${arch}.tar.gz" |
+      tar -xz --no-same-owner -C "$HOME/.local/bin" cue
+    ;;
+  *)
+    echo "Error: Unsupported machine type: $MACHINE_TYPE" >&2
+    return 1
+    ;;
+  esac
+}
+
 # mise: version manager for Go and node (and whatever a project's mise.toml
 # pins).
 # The tools it installs come from mise/config.toml, linked to ~/.config/mise.
